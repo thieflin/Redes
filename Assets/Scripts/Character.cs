@@ -7,7 +7,12 @@ public class Character : MonoBehaviourPun
 {
     Renderer r;
     public PhotonView pv;
-    public float speed = 3f;
+
+    [Header("Physics")]
+    public float speed;
+    [SerializeField]
+    float jumpForce;
+    Rigidbody _rb;
 
 
     void Start()
@@ -15,26 +20,48 @@ public class Character : MonoBehaviourPun
         r = GetComponent<Renderer>();
         pv = GetComponent<PhotonView>();
 
+        //Los posiciono a uno en cada lado
         if (PhotonNetwork.PlayerList.Length < 2)
             transform.position = new Vector3(-7.5f, 1f, -10f);
         else
-        {
             transform.position = new Vector3(7.5f, 1f, -10f);
-        }
+
 
         if (pv.IsMine)
+        {
             r.material.color = Color.blue;
+            _rb = GetComponent<Rigidbody>();
+        }
         else
             r.material.color = Color.red;
 
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
+    {
+        if (!photonView.IsMine)
+            return;
+
+        if (WaitingPlayersManager.canStart)
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+            {
+
+                Jump();
+            }
+    }
+
+    private void FixedUpdate()
     {
         if (!pv.IsMine)
             return;
 
-        transform.position += transform.right * Input.GetAxis("Horizontal") * Time.deltaTime * speed;
+        if (WaitingPlayersManager.canStart)
+            _rb.MovePosition(_rb.position + transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
     }
+
+    void Jump()
+    {
+        _rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+    }
+
 }
