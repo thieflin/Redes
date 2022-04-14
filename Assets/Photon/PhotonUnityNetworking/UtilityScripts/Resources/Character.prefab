@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 3716090326631128776}
   - component: {fileID: 3716090326631128779}
   - component: {fileID: 3716090326631128778}
-  - component: {fileID: 5678095580739963991}
+  - component: {fileID: 330614998117469484}
   - component: {fileID: 6152926951074438110}
   - component: {fileID: -3110542324265310651}
   m_Layer: 0
-  m_Name: Player
-  m_TagString: Untagged
+  m_Name: Character
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -98,7 +98,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &5678095580739963991
+--- !u!114 &330614998117469484
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,8 +110,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab01949163e74274abbd7b6012f93035, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMat: {fileID: 2100000, guid: 2a376b942341ee54dadc93c3e8ffedc3, type: 2}
-  enemyMat: {fileID: 2100000, guid: 1e716a899bd3e3846b2b8dde0c6b17e8, type: 2}
   pv: {fileID: 6152926951074438110}
   speed: 3
 --- !u!114 &6152926951074438110

@@ -18,7 +18,7 @@ public class LobbyUI : MonoBehaviourPunCallbacks
     {
         RoomOptions options = new RoomOptions();
 
-        options.MaxPlayers = 4;
+        options.MaxPlayers = 2;
 
         PhotonNetwork.CreateRoom(serverNameField.text, options);
 
