@@ -8,16 +8,18 @@ public class Character : MonoBehaviourPun
 {
     Renderer r;
     public PhotonView pv;
-    [SerializeField] GameObject _bulletPref;
+    [SerializeField] Bullet _bulletPref;
     [SerializeField] GameObject _bSpawner;
 
     [Header("Physics")]
     public float speed;
+
+    public float bulletDmg;
     [SerializeField]
     float jumpForce;
     Rigidbody _rb;
 
-    public int currentHp, maxHp;
+    public float currentHp, maxHp;
     public float percent;
     public Slider hpSlider;
 
@@ -29,7 +31,7 @@ public class Character : MonoBehaviourPun
 
         hpSlider.maxValue = maxHp;
         hpSlider.value = maxHp;
-        
+
         //Los posiciono a uno en cada lado
         if (PhotonNetwork.PlayerList.Length < 2)
             transform.position = new Vector3(-7.5f, 1f, -10f);
@@ -68,11 +70,6 @@ public class Character : MonoBehaviourPun
         {
             photonView.RPC("Shoot", RpcTarget.All);
         }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            photonView.RPC("TakeDmg", RpcTarget.All);
-        }
     }
 
     private void FixedUpdate()
@@ -93,19 +90,40 @@ public class Character : MonoBehaviourPun
     void Shoot()
     {
         Instantiate(_bulletPref, transform.position, Quaternion.identity);
+        //Creo la bala con las caracteristicas que quiera
+        _bulletPref.SetBullet(bulletDmg, this/*, Color.blue*/);
 
     }
 
     [PunRPC]
-    void TakeDmg()
+    public void TakeDmg(float dmg)
     {
-        currentHp -= 10;
+        if (!pv.IsMine)
+        {
+            photonView.RPC("UpdateLifebar", RpcTarget.All);
+            currentHp -= dmg;
+        }
+        else { 
+            currentHp -= dmg;
+             hpSlider.value = currentHp;
+        }
+        //Hago un rpc que se encargue de updatear la lifebar
+
+
+
+    }
+
+    [PunRPC]
+    public void UpdateLifebar()
+    {
         hpSlider.value = currentHp;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    [PunRPC]
+    public void Die()
     {
-        
+        Debug.Log("a casitaaaaaaaaaaaaa");
     }
 
 }
+

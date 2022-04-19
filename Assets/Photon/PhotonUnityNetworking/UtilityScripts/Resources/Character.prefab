@@ -245,9 +245,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pv: {fileID: 6152926951074438110}
-  _bulletPref: {fileID: 6164861708536662066, guid: 182c6c624c0b6b649aa554f0d374dcfc, type: 3}
+  _bulletPref: {fileID: 4003415398273621467, guid: 182c6c624c0b6b649aa554f0d374dcfc, type: 3}
   _bSpawner: {fileID: 0}
   speed: 7
+  bulletDmg: 10
   jumpForce: 12
   currentHp: 100
   maxHp: 100
