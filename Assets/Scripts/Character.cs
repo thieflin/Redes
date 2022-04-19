@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.UI;
 
 public class Character : MonoBehaviourPun
 {
@@ -16,12 +17,19 @@ public class Character : MonoBehaviourPun
     float jumpForce;
     Rigidbody _rb;
 
+    public int currentHp, maxHp;
+    public float percent;
+    public Slider hpSlider;
 
     void Start()
     {
+        currentHp = maxHp;
         r = GetComponent<Renderer>();
         pv = GetComponent<PhotonView>();
 
+        hpSlider.maxValue = maxHp;
+        hpSlider.value = maxHp;
+        
         //Los posiciono a uno en cada lado
         if (PhotonNetwork.PlayerList.Length < 2)
             transform.position = new Vector3(-7.5f, 1f, -10f);
@@ -33,9 +41,14 @@ public class Character : MonoBehaviourPun
         {
             r.material.color = Color.blue;
             _rb = GetComponent<Rigidbody>();
+            //Esto es para que la vida sea del color que le corresponde
+            hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.blue;
         }
         else
+        {
             r.material.color = Color.red;
+            hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.red;
+        }
 
     }
 
@@ -54,6 +67,11 @@ public class Character : MonoBehaviourPun
         if (Input.GetKeyDown(KeyCode.Space))
         {
             photonView.RPC("Shoot", RpcTarget.All);
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            photonView.RPC("TakeDmg", RpcTarget.All);
         }
     }
 
@@ -76,6 +94,18 @@ public class Character : MonoBehaviourPun
     {
         Instantiate(_bulletPref, transform.position, Quaternion.identity);
 
+    }
+
+    [PunRPC]
+    void TakeDmg()
+    {
+        currentHp -= 10;
+        hpSlider.value = currentHp;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
     }
 
 }
