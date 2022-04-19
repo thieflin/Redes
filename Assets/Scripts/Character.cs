@@ -7,6 +7,8 @@ public class Character : MonoBehaviourPun
 {
     Renderer r;
     public PhotonView pv;
+    [SerializeField] GameObject _bulletPref;
+    [SerializeField] GameObject _bSpawner;
 
     [Header("Physics")]
     public float speed;
@@ -48,6 +50,11 @@ public class Character : MonoBehaviourPun
 
                 Jump();
             }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            photonView.RPC("Shoot", RpcTarget.All);
+        }
     }
 
     private void FixedUpdate()
@@ -62,6 +69,13 @@ public class Character : MonoBehaviourPun
     void Jump()
     {
         _rb.AddForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+    }
+
+    [PunRPC]
+    void Shoot()
+    {
+        Instantiate(_bulletPref, transform.position, Quaternion.identity);
+
     }
 
 }
