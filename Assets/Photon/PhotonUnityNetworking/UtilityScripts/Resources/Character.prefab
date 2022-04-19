@@ -247,6 +247,8 @@ MonoBehaviour:
   pv: {fileID: 6152926951074438110}
   _bulletPref: {fileID: 4003415398273621467, guid: 182c6c624c0b6b649aa554f0d374dcfc, type: 3}
   _bSpawner: {fileID: 0}
+  isAttacking: 0
+  shield: {fileID: 2443561755542812080, guid: 25ae6493636689a408c5beff0137ee78, type: 3}
   speed: 7
   bulletDmg: 10
   jumpForce: 12

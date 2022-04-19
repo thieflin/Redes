@@ -11,6 +11,11 @@ public class Character : MonoBehaviourPun
     [SerializeField] Bullet _bulletPref;
     [SerializeField] GameObject _bSpawner;
 
+
+    public static bool isAttacking;
+    public Shield shield;
+
+
     [Header("Physics")]
     public float speed;
 
@@ -35,12 +40,13 @@ public class Character : MonoBehaviourPun
         //Los posiciono a uno en cada lado
         if (PhotonNetwork.PlayerList.Length < 2)
             transform.position = new Vector3(-7.5f, 1f, -10f);
-        else
-            transform.position = new Vector3(7.5f, 1f, -10f);
+
+        else transform.position = new Vector3(7.5f, 1f, -10f);
 
 
         if (pv.IsMine)
         {
+            isAttacking = false;
             r.material.color = Color.blue;
             _rb = GetComponent<Rigidbody>();
             //Esto es para que la vida sea del color que le corresponde
@@ -48,6 +54,7 @@ public class Character : MonoBehaviourPun
         }
         else
         {
+            isAttacking = true;
             r.material.color = Color.red;
             hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.red;
         }
@@ -68,8 +75,28 @@ public class Character : MonoBehaviourPun
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            photonView.RPC("Shoot", RpcTarget.All);
+            if (isAttacking)
+                photonView.RPC("Shoot", RpcTarget.All);
+            else photonView.RPC("Defend", RpcTarget.All);
         }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            if (!pv.IsMine)
+            {
+                if (isAttacking) isAttacking = false;
+                else isAttacking = true;
+            }
+            else
+            {
+                if (isAttacking) isAttacking = false;
+                else isAttacking = true;
+            }
+        }
+
+
+
+
     }
 
     private void FixedUpdate()
@@ -96,6 +123,12 @@ public class Character : MonoBehaviourPun
     }
 
     [PunRPC]
+    void Defend()
+    {
+        Instantiate(shield, transform.position, Quaternion.identity);
+    }
+
+    [PunRPC]
     public void TakeDmg(float dmg)
     {
         if (!pv.IsMine)
@@ -103,9 +136,10 @@ public class Character : MonoBehaviourPun
             photonView.RPC("UpdateLifebar", RpcTarget.All);
             currentHp -= dmg;
         }
-        else { 
+        else
+        {
             currentHp -= dmg;
-             hpSlider.value = currentHp;
+            hpSlider.value = currentHp;
         }
         //Hago un rpc que se encargue de updatear la lifebar
 
