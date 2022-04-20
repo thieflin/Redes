@@ -26,7 +26,7 @@ public class Enemy : MonoBehaviourPun
 
     public PhotonView pv;
 
-    public EnemyBullet _ebulletPref;
+    public GameObject _ebulletPref;
 
     private void Start()
     {
@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviourPun
     }
     private void Update()
     {
-        if (!pv.IsMine) return;
+        if (!pv.IsMine && !PhotonNetwork.IsMasterClient) return;
         if(_canShoot)
             StartCoroutine(shootingTime());
         
@@ -84,8 +84,8 @@ public class Enemy : MonoBehaviourPun
     [PunRPC]
     public void EnemyShooting(float dirX)
     {
-        Instantiate(_ebulletPref, _ebSpawner.transform.position, Quaternion.identity);
-        _ebulletPref.SetBullet(_dmgBullet, dirX);
+        GameObject b = Instantiate(_ebulletPref, _ebSpawner.transform.position, Quaternion.identity);
+        b.GetComponent<EnemyBullet>().SetBullet(_dmgBullet, dirX);
     }
 
     //Para ubicarlo mas facil la duda esta aca:

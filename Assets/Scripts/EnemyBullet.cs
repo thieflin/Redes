@@ -13,7 +13,7 @@ public class EnemyBullet : MonoBehaviour
     public void Update()
     {
         transform.position += dir*speed*Time.deltaTime;
-        Debug.Log(dir);
+        Debug.Log(dir); 
     }
 
 
