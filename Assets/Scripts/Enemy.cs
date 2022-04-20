@@ -41,23 +41,27 @@ public class Enemy : MonoBehaviourPun
     [PunRPC]
     public void UpdateHp()
     {
-        if (!pv.IsMine)
             slider.value = _hp;
-        else return;
+        
     }
 
     public void TakeDamage(int dmg)
     {
-        if (pv.IsMine)
+        if (!pv.IsMine)
         {
             _hp -= dmg;
-            slider.value = _hp;
-
-            pv.RPC("UpdateHp", RpcTarget.All);
+            photonView.RPC("UpdateHp", RpcTarget.All);
             if (_hp <= 0)
                 StartCoroutine(WaitTillSpawnCoroutine());
         }
-        
+        else
+        {
+            _hp -= dmg;
+            slider.value = _hp;
+            if (_hp <= 0)
+                StartCoroutine(WaitTillSpawnCoroutine());
+        }
+
     }
 
 
