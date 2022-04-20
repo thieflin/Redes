@@ -21,7 +21,6 @@ public class Enemy : MonoBehaviourPun
 
     [SerializeField]
     private float _shootTime;
-    private float _time;
     private bool _canShoot;
 
 
@@ -92,7 +91,7 @@ public class Enemy : MonoBehaviourPun
     public IEnumerator shootingTime()
     {
         _canShoot = false;
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(_shootTime);
         pv.RPC("EnemyShooting", RpcTarget.All);
         _canShoot = true;
     }

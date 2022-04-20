@@ -211,9 +211,9 @@ MonoBehaviour:
   _hp: 300
   _maxHp: 300
   slider: {fileID: 1021001471189676671}
-  _dmgBullet: 0
+  _dmgBullet: 10
   _ebSpawner: {fileID: 5616001556538604967}
-  _shootTime: 0
+  _shootTime: 0.3
   pv: {fileID: -7167576800405722256}
   _ebulletPref: {fileID: -2545465255660023013, guid: 4d9c2ae94c0c40748ac866904d905179, type: 3}
 --- !u!114 &-7167576800405722256

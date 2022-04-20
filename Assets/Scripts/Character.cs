@@ -118,18 +118,21 @@ public class Character : MonoBehaviourPun
 
     public void TakeDmg(int dmg)
     {
-        if (!pv.IsMine)
-        {
-            currentHp -= dmg;
-            photonView.RPC("UpdateHpChar", RpcTarget.All);
-        }
-        else
-        {
-            //Si soy yo, entonces updateame a mi sin problemas
-            currentHp -= dmg;
-            hpSlider.value = currentHp;
-        }
+        currentHp -= dmg;
+        hpSlider.value = currentHp;
+        //if (!pv.IsMine)
+        //{
+        //    currentHp -= dmg;
+        //    photonView.RPC("UpdateHpChar", RpcTarget.All);
+        //}
+        //else
+        //{
+        //    //Si soy yo, entonces updateame a mi sin problemas
+        //    currentHp -= dmg;
+        //    hpSlider.value = currentHp;
+        //}
     }
+
     [PunRPC]
     public void UpdateHpChar()
     {
