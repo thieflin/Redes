@@ -66,16 +66,16 @@ public class Character : MonoBehaviourPun
         if (!photonView.IsMine)
             return;
 
-        if (WaitingPlayersManager.canStart)
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-            {
+        //if (WaitingPlayersManager.canStart)
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
 
-                Jump();
-            }
+            Jump();
+        }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-                photonView.RPC("Shoot", RpcTarget.All);
+            photonView.RPC("Shoot", RpcTarget.All);
         }
 
 
@@ -88,8 +88,18 @@ public class Character : MonoBehaviourPun
         if (!pv.IsMine)
             return;
 
-        if (WaitingPlayersManager.canStart)
+        //if (WaitingPlayersManager.canStart)
+
+        if (Input.GetAxis("Horizontal") > 0)
+        {
             _rb.MovePosition(_rb.position + transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
+            transform.right = Vector3.right;
+        }
+        else if (Input.GetAxis("Horizontal") < 0)
+        {
+            _rb.MovePosition(_rb.position - transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
+            transform.right = Vector3.left;
+        }
     }
 
     void Jump()
@@ -100,22 +110,30 @@ public class Character : MonoBehaviourPun
     [PunRPC]
     void Shoot()
     {
-        Instantiate(_bulletPref, transform.position, Quaternion.identity);
+        Instantiate(_bulletPref, transform.position, transform.rotation);
         //Creo la bala con las caracteristicas que quiera
         _bulletPref.SetBullet(bulletDmg);
 
     }
 
-
-    [PunRPC]
     public void TakeDmg(float dmg)
     {
-        if (pv.IsMine)
+        if (!pv.IsMine)
         {
-            hpSlider.value = currentHp;
             currentHp -= dmg;
+            photonView.RPC("UpdateHpChar", RpcTarget.All);
         }
-
+        else
+        {
+            //Si soy yo, entonces updateame a mi sin problemas
+            currentHp -= dmg;
+            hpSlider.value = currentHp;
+        }
+    }
+    [PunRPC]
+    public void UpdateHpChar()
+    {
+        hpSlider.value = currentHp;
     }
 
     [PunRPC]

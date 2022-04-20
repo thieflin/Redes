@@ -12,6 +12,18 @@ public class Enemy : MonoBehaviourPun
     private float _maxHp;
     public Slider slider;
 
+    [SerializeField]
+    private int _dmgBullet;
+
+
+    [SerializeField]
+    private GameObject _ebSpawner;
+
+    [SerializeField]
+    private float _shootTime;
+    private float _time;
+    private bool _canShoot;
+
 
     public PhotonView pv;
 
@@ -20,8 +32,15 @@ public class Enemy : MonoBehaviourPun
     private void Start()
     {
         _hp = _maxHp;
+        _canShoot = true;
     }
-
+    private void Update()
+    {
+        if (!pv.IsMine) return;
+        if(_canShoot)
+            StartCoroutine(shootingTime());
+        
+    }
 
     //eSTA FUNCION ES LA QUE UPDATE EL SLIDER EN BASE A LA VIDA CON UN RPC PARA NOTIFICARLE A LOS OTROS LA VIDA QUE PIERDO
     [PunRPC]
@@ -54,7 +73,7 @@ public class Enemy : MonoBehaviourPun
 
     }
 
-
+    //Bichito spawner hehe
     IEnumerator WaitTillSpawnCoroutine()
     {
         GetComponent<Renderer>().enabled = false;
@@ -66,9 +85,17 @@ public class Enemy : MonoBehaviourPun
     [PunRPC]
     public void EnemyShooting()
     {
-
+        Instantiate(_ebulletPref, _ebSpawner.transform.position, Quaternion.identity);
+        _ebulletPref.SetBullet(_dmgBullet);
     }
 
+    public IEnumerator shootingTime()
+    {
+        _canShoot = false;
+        yield return new WaitForSeconds(0.2f);
+        pv.RPC("EnemyShooting", RpcTarget.All);
+        _canShoot = true;
+    }
 
 
 }
