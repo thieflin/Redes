@@ -7,23 +7,23 @@ public class EnemyBullet : MonoBehaviour
     [SerializeField]
     private int _dmg;
     private float _randomDir;
+    private Vector3 dir;
     [SerializeField]
     private int speed;
-    private void Start()
-    {
-        _randomDir = Random.Range(-2f, 2f);
-    }
     public void Update()
     {
-        transform.position += new Vector3(_randomDir, -1, 0)*speed*Time.deltaTime;
+        transform.position += dir*speed*Time.deltaTime;
+        Debug.Log(dir);
     }
 
 
 
-    public EnemyBullet SetBullet(int dmg)
+    public EnemyBullet SetBullet(int dmg, float randomDir)
     {
         _dmg = dmg;
-
+        _randomDir = randomDir;
+        dir = new Vector3(randomDir, -1, 0);
+        Debug.Log(dir);
         return this;
     }
 

@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 6152926951074438110}
   - component: {fileID: 2016553396535521316}
   - component: {fileID: 5413867863658690348}
-  - component: {fileID: 5419328194152965104}
+  - component: {fileID: -7522382867908796717}
   m_Layer: 0
   m_Name: Character
   m_TagString: Player
@@ -276,7 +276,7 @@ MonoBehaviour:
   observableSearch: 2
   ObservedComponents:
   - {fileID: 5413867863658690348}
-  - {fileID: 5419328194152965104}
+  - {fileID: -7522382867908796717}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 0
   m_TeleportEnabled: 1
   m_TeleportIfDistanceGreaterThan: 3
---- !u!114 &5419328194152965104
+--- !u!114 &-7522382867908796717
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

@@ -82,17 +82,20 @@ public class Enemy : MonoBehaviourPun
     }
 
     [PunRPC]
-    public void EnemyShooting()
+    public void EnemyShooting(float dirX)
     {
         Instantiate(_ebulletPref, _ebSpawner.transform.position, Quaternion.identity);
-        _ebulletPref.SetBullet(_dmgBullet);
+        _ebulletPref.SetBullet(_dmgBullet, dirX);
     }
 
+    //Para ubicarlo mas facil la duda esta aca:
     public IEnumerator shootingTime()
     {
         _canShoot = false;
         yield return new WaitForSeconds(_shootTime);
-        pv.RPC("EnemyShooting", RpcTarget.All);
+        //Aca le seteo el DirX para que sea la misma en todas pero por algun motivo me lo sobreescribe
+        float dirxx = Random.Range(-2f, 2f);
+        pv.RPC("EnemyShooting", RpcTarget.All, dirxx);
         _canShoot = true;
     }
 
