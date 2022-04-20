@@ -5,7 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField]
-    float _dmg;
+    int _dmg;
     float _speed = 10;
     [SerializeField]
     Character _owner;
@@ -18,26 +18,22 @@ public class Bullet : MonoBehaviour
     }
 
 
-    public Bullet SetBullet(float dmg, Character owner/*, Color color*/)
+    public Bullet SetBullet(int dmg)
     {
         _dmg = dmg;
-        _owner = owner;
-        //GetComponent<Renderer>().material.color = color;
         return this;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        var ch = GetComponent<Character>();
+        var enemy = other.GetComponent<Enemy>();
 
-        if (other.gameObject.GetComponent<Character>().photonView.IsMine) return;
-        else
+        if (enemy)
         {
-            other.gameObject.GetComponent<Character>().TakeDmg(_dmg);
+            enemy.TakeDamage(_dmg);
+            Destroy(gameObject);
         }
-
-            
-            
-        
     }
+
+
 }

@@ -19,7 +19,7 @@ public class Character : MonoBehaviourPun
     [Header("Physics")]
     public float speed;
 
-    public float bulletDmg;
+    public int bulletDmg;
     [SerializeField]
     float jumpForce;
     Rigidbody _rb;
@@ -75,23 +75,7 @@ public class Character : MonoBehaviourPun
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (isAttacking)
                 photonView.RPC("Shoot", RpcTarget.All);
-            else photonView.RPC("Defend", RpcTarget.All);
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            if (!pv.IsMine)
-            {
-                if (isAttacking) isAttacking = false;
-                else isAttacking = true;
-            }
-            else
-            {
-                if (isAttacking) isAttacking = false;
-                else isAttacking = true;
-            }
         }
 
 
@@ -118,39 +102,20 @@ public class Character : MonoBehaviourPun
     {
         Instantiate(_bulletPref, transform.position, Quaternion.identity);
         //Creo la bala con las caracteristicas que quiera
-        _bulletPref.SetBullet(bulletDmg, this/*, Color.blue*/);
+        _bulletPref.SetBullet(bulletDmg);
 
     }
 
-    [PunRPC]
-    void Defend()
-    {
-        Instantiate(shield, transform.position, Quaternion.identity);
-    }
 
     [PunRPC]
     public void TakeDmg(float dmg)
     {
-        if (!pv.IsMine)
+        if (pv.IsMine)
         {
-            photonView.RPC("UpdateLifebar", RpcTarget.All);
-            currentHp -= dmg;
-        }
-        else
-        {
-            currentHp -= dmg;
             hpSlider.value = currentHp;
+            currentHp -= dmg;
         }
-        //Hago un rpc que se encargue de updatear la lifebar
 
-
-
-    }
-
-    [PunRPC]
-    public void UpdateLifebar()
-    {
-        hpSlider.value = currentHp;
     }
 
     [PunRPC]

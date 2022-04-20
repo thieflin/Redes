@@ -15,6 +15,8 @@ public class WaitingPlayersManager : MonoBehaviour
 
     public TextMeshProUGUI startMessageText, threeText, twoText, oneText;
 
+    public SpawnManager sm;
+
     void Update()
     {
         if (PhotonNetwork.PlayerList.Length < 2)
@@ -31,7 +33,7 @@ public class WaitingPlayersManager : MonoBehaviour
 
     void CountDown()
     {
-        startTextAnimation.SetTrigger("StartGame");   
+        startTextAnimation.SetTrigger("StartGame");
         canStart = true;
     }
 }

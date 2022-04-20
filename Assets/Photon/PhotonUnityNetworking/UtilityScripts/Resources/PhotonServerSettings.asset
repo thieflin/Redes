@@ -45,6 +45,11 @@ MonoBehaviour:
   - UpdateLifebar
   - Die
   - Defend
+  - SpawnEnemy
+  - ActualizarVida
+  - EnemyShooting
+  - TakeDamage
+  - UpdateHp
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
