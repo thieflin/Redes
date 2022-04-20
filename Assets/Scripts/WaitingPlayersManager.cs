@@ -17,6 +17,8 @@ public class WaitingPlayersManager : MonoBehaviour
 
     public SpawnManager sm;
 
+    public int waitUntilSpawn;
+
     void Update()
     {
         if (PhotonNetwork.PlayerList.Length < 2)
@@ -34,6 +36,14 @@ public class WaitingPlayersManager : MonoBehaviour
     void CountDown()
     {
         startTextAnimation.SetTrigger("StartGame");
+        StartCoroutine(WaitTilBichitoSpawn());
+    }
+
+    public IEnumerator WaitTilBichitoSpawn()
+    {
+        yield return new WaitForSeconds(waitUntilSpawn);
         canStart = true;
     }
+
+    
 }

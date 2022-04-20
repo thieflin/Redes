@@ -33,9 +33,11 @@ public class EnemyBullet : MonoBehaviour
 
         if (character)
         {
+            Debug.Log("toy pegandooo");
             character.TakeDmg(_dmg);
             Destroy(gameObject);
         }
+
 
         if (other.gameObject.tag == "wall")
         {

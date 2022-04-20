@@ -116,7 +116,7 @@ public class Character : MonoBehaviourPun
 
     }
 
-    public void TakeDmg(float dmg)
+    public void TakeDmg(int dmg)
     {
         if (!pv.IsMine)
         {
