@@ -17,6 +17,8 @@ public class WaitingPlayersManager : MonoBehaviour
 
     public SpawnManager sm;
 
+    public GameObject counterKillsBoss;
+
     public int waitUntilSpawn;
 
     void Update()
@@ -42,6 +44,7 @@ public class WaitingPlayersManager : MonoBehaviour
     public IEnumerator WaitTilBichitoSpawn()
     {
         yield return new WaitForSeconds(waitUntilSpawn);
+        counterKillsBoss.SetActive(true);
         canStart = true;
     }
 

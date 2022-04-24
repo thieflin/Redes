@@ -10,6 +10,8 @@ public class Character : MonoBehaviourPun
     public PhotonView pv;
     [SerializeField] Bullet _bulletPref;
     [SerializeField] GameObject _bSpawner;
+    [SerializeField] Animator animator;
+    [SerializeField] GameObject playerSign;
 
 
     public static bool isAttacking;
@@ -33,6 +35,7 @@ public class Character : MonoBehaviourPun
         currentHp = maxHp;
         r = GetComponent<Renderer>();
         pv = GetComponent<PhotonView>();
+        animator = GetComponentInChildren<Animator>();
 
         hpSlider.maxValue = maxHp;
         hpSlider.value = maxHp;
@@ -40,8 +43,11 @@ public class Character : MonoBehaviourPun
         //Los posiciono a uno en cada lado
         if (PhotonNetwork.PlayerList.Length < 2)
             transform.position = new Vector3(-7.5f, 1f, -10f);
-
-        else transform.position = new Vector3(7.5f, 1f, -10f);
+        else
+        {
+            transform.Rotate(0, -180, 0);
+            transform.position = new Vector3(7.5f, 1f, -10f);
+        }
 
 
         if (pv.IsMine)
@@ -51,12 +57,14 @@ public class Character : MonoBehaviourPun
             _rb = GetComponent<Rigidbody>();
             //Esto es para que la vida sea del color que le corresponde
             hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.blue;
+            playerSign.SetActive(true);
         }
         else
         {
             isAttacking = true;
             r.material.color = Color.red;
             hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.red;
+            playerSign.SetActive(false);
         }
 
     }
@@ -69,7 +77,6 @@ public class Character : MonoBehaviourPun
         //if (WaitingPlayersManager.canStart)
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
-
             Jump();
         }
 
@@ -88,17 +95,24 @@ public class Character : MonoBehaviourPun
         if (!pv.IsMine)
             return;
 
-        //if (WaitingPlayersManager.canStart)
-
-        if (Input.GetAxis("Horizontal") > 0)
+        if (WaitingPlayersManager.canStart)
         {
-            _rb.MovePosition(_rb.position + transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
-            transform.right = Vector3.right;
-        }
-        else if (Input.GetAxis("Horizontal") < 0)
-        {
-            _rb.MovePosition(_rb.position - transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
-            transform.right = Vector3.left;
+            if (Input.GetAxis("Horizontal") > 0)
+            {
+                _rb.MovePosition(_rb.position + transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
+                transform.right = Vector3.right;
+                animator.SetFloat("Speed", 1);
+            }
+            else if (Input.GetAxis("Horizontal") < 0)
+            {
+                _rb.MovePosition(_rb.position - transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
+                transform.right = Vector3.left;
+                animator.SetFloat("Speed", 1);
+            }
+            else
+            {
+                animator.SetFloat("Speed", 0);
+            }
         }
     }
 
@@ -110,7 +124,7 @@ public class Character : MonoBehaviourPun
     [PunRPC]
     void Shoot()
     {
-        Instantiate(_bulletPref, transform.position, transform.rotation);
+        Instantiate(_bulletPref, _bSpawner.transform.position, transform.rotation);
         //Creo la bala con las caracteristicas que quiera
         _bulletPref.SetBullet(bulletDmg);
 
@@ -119,9 +133,13 @@ public class Character : MonoBehaviourPun
     public void TakeDmg(int dmg)
     {
         if (!pv.IsMine) return;
-        
+
         currentHp -= dmg;
         photonView.RPC("UpdateHpChar", RpcTarget.All, currentHp);
+        if (currentHp <= 0)
+        {
+            Die();
+        }
 
     }
     [PunRPC]
@@ -136,6 +154,5 @@ public class Character : MonoBehaviourPun
     {
         Debug.Log("a casitaaaaaaaaaaaaa");
     }
-
 }
 

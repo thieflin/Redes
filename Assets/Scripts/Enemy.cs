@@ -36,16 +36,19 @@ public class Enemy : MonoBehaviourPun
     private void Update()
     {
         if (!pv.IsMine && !PhotonNetwork.IsMasterClient) return;
-        if(_canShoot)
+        if (_canShoot)
             StartCoroutine(shootingTime());
-        
+
+
+        if (!WaitingPlayersManager.canStart)
+            Destroy(gameObject);
     }
 
     //eSTA FUNCION ES LA QUE UPDATE EL SLIDER EN BASE A LA VIDA CON UN RPC PARA NOTIFICARLE A LOS OTROS LA VIDA QUE PIERDO
     [PunRPC]
     public void UpdateHp()
     {
-            slider.value = _hp;
+        slider.value = _hp;
     }
 
     //Este take dmg lo que hace es updatear mi estado actual en MI pantalla
@@ -59,7 +62,10 @@ public class Enemy : MonoBehaviourPun
             photonView.RPC("UpdateHp", RpcTarget.All);
             //Bueno aca consulta si muere o no para hacer el pedidito de bicho
             if (_hp <= 0)
+            {
+    
                 StartCoroutine(WaitTillSpawnCoroutine());
+            }
         }
         else
         {
@@ -67,7 +73,9 @@ public class Enemy : MonoBehaviourPun
             _hp -= dmg;
             slider.value = _hp;
             if (_hp <= 0)
+            {
                 StartCoroutine(WaitTillSpawnCoroutine());
+            }
         }
 
     }
@@ -75,8 +83,11 @@ public class Enemy : MonoBehaviourPun
     //Bichito spawner hehe
     IEnumerator WaitTillSpawnCoroutine()
     {
-        GetComponent<Renderer>().enabled = false;
+        //GetComponent<Renderer>().enabled = false;
+        GetComponent<BoxCollider>().isTrigger = true;
         yield return new WaitForSeconds(1);
+        //Sumo 1 a la veces que mataron al boss y lo aplico en la interfaz
+        BossCounter.timeDefeatBoss++;
         IDManager.instance.canSpawn = true;
         Destroy(gameObject);
     }

@@ -10,6 +10,7 @@ public class EnemyBullet : MonoBehaviour
     private Vector3 dir;
     [SerializeField]
     private int speed;
+
     public void Update()
     {
         transform.position += dir*speed*Time.deltaTime;
