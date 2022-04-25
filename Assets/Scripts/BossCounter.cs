@@ -11,6 +11,11 @@ public class BossCounter : MonoBehaviour
     public TextMeshProUGUI bossCounterText;
     public static int timeDefeatBoss;
 
+    private void Awake()
+    {
+        timeDefeatBoss = 0;
+    }
+
     private void Update()
     {
         //pv.RPC("UpdateScore", RpcTarget.All);

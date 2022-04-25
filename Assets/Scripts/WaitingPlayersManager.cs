@@ -21,6 +21,11 @@ public class WaitingPlayersManager : MonoBehaviour
 
     public int waitUntilSpawn;
 
+    private void Start()
+    {
+        canStart = false;
+    }
+
     void Update()
     {
         if (PhotonNetwork.PlayerList.Length < 2)

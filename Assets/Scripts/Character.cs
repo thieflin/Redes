@@ -31,7 +31,7 @@ public class Character : MonoBehaviourPun
     public bool isDead;
     public float percent;
     public Slider hpSlider;
-    public int characterID;
+    //public int characterID = 0;
 
 
     void Start()
@@ -44,20 +44,22 @@ public class Character : MonoBehaviourPun
         hpSlider.value = maxHp;
 
         //Los posiciono a uno en cada lado
-        if (PhotonNetwork.PlayerList.Length < 2)
+        if (SetID.instance.characterID == 0)
         {
-            transform.position = new Vector3(-7f, 1f, -10f);
-            characterID = 1;
-            WinLossCondition.player1 = this;
+            if (PhotonNetwork.PlayerList.Length < 2)
+            {
+                transform.position = new Vector3(-7f, 1f, -10f);
+                SetID.instance.characterID = 1;
+                WinLossCondition.player1 = this;
+            }
+            else
+            {
+                transform.Rotate(0, -180, 0);
+                transform.position = new Vector3(7f, 1f, -10f);
+                SetID.instance.characterID = 2;
+                WinLossCondition.player2 = this;
+            }
         }
-        else
-        {
-            transform.Rotate(0, -180, 0);
-            transform.position = new Vector3(7f, 1f, -10f);
-            characterID = 2;
-            WinLossCondition.player2 = this;
-        }
-
 
         if (pv.IsMine)
         {
@@ -171,30 +173,33 @@ public class Character : MonoBehaviourPun
         isDead = true;
     }
 
-    [PunRPC]
-    public void Respawn()
-    {
-        currentHp = maxHp;
-        rendererSkin.material.color = Color.white;
-        this.GetComponent<BoxCollider>().isTrigger = false;
-        photonView.RPC("UpdateHpChar", RpcTarget.All, currentHp);
+    //public void Respawn()
+    //{
+    //    //currentHp = maxHp;
+    //    //rendererSkin.material.color = Color.white;
+    //    //this.GetComponent<BoxCollider>().isTrigger = false;
+    //    photonView.RPC("UpdateHpChar", RpcTarget.All, currentHp);
 
-        if (characterID == 1)
-        {
-            transform.position = new Vector3(-7f, 1f, -10f);
-        }
-        else if (characterID == 2)
-        {
-            transform.Rotate(0, -180, 0);
-            transform.position = new Vector3(7f, 1f, -10f);
-        }
+    //    if (SetID.instance.characterID == 1)
+    //    {
+    //        transform.position = new Vector3(-7f, 1f, -10f);
+    //        Debug.Log("ENTRE AL CHARACTER ID 1!!!");
+    //    }
+    //    else if (SetID.instance.characterID == 2)
+    //    {
+    //        transform.Rotate(0, -180, 0);
+    //        transform.position = new Vector3(7f, 1f, -10f);
+    //        Debug.Log("ENTRE AL CHARACTER ID 2!!!");
+    //    }
 
-        isDead = false;
-    }
+    //    isDead = false;
+    //}
 
-    public void RespawnWithRPC()
-    {
-        photonView.RPC("Respawn", RpcTarget.All);
-    }
+    //public void RespawnWithRPC()
+    //{
+    //    photonView.RPC("Respawn", RpcTarget.All);
+    //}
+
+
 }
 

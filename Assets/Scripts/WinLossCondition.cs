@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class WinLossCondition : MonoBehaviour
@@ -18,7 +19,8 @@ public class WinLossCondition : MonoBehaviour
 
     public int playersReady;
 
-    public TextMeshProUGUI textPlayersReady;
+    public TextMeshProUGUI textPlayersReadyOnLoss;
+    public TextMeshProUGUI textPlayersReadyOnWin;
 
     public Enemy enemy;
 
@@ -32,7 +34,11 @@ public class WinLossCondition : MonoBehaviour
 
     private void Start()
     {
+        PhotonNetwork.AutomaticallySyncScene = true;
+        gameIsOver = false;
+
         playersDead = 0;
+
     }
 
     private void Update()
@@ -43,13 +49,6 @@ public class WinLossCondition : MonoBehaviour
             loseScreen.SetActive(true);
             gameIsOver = true;
         }
-        if (playersDead < 2)
-        {
-            loseScreen.SetActive(false);
-            playersReady = 0;
-            playAgainButtonLoss.interactable = true;
-            gameIsOver = false;
-        }
 
         Debug.Log(playersDead + " Player Dead");
         Debug.Log(playersReady + " Player Ready");
@@ -59,6 +58,11 @@ public class WinLossCondition : MonoBehaviour
         {
             winScreen.SetActive(true);
             gameIsOver = true;
+        }
+        else
+        {
+            winScreen.SetActive(false);
+            gameIsOver = false;
         }
     }
 
@@ -75,19 +79,18 @@ public class WinLossCondition : MonoBehaviour
     {
         playersReady++;
 
-        textPlayersReady.text = playersReady.ToString();
+        textPlayersReadyOnLoss.text = playersReady.ToString();
+        textPlayersReadyOnWin.text = playersReady.ToString();
 
         if (playersReady == 2)
         {
-            playersDead = 0;
-            player1.RespawnWithRPC();
-            player2.RespawnWithRPC();
-            playersReady = 0;
             BossCounter.timeDefeatBoss = 0;
-            IDManager.instance.canSpawn = true;
-            textPlayersReady.text = "0";
+            PhotonNetwork.LoadLevel(1);
+            gameIsOver = false;
         }
         else
             return;
     }
+
+    
 }
