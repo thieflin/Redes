@@ -346,12 +346,14 @@ MonoBehaviour:
   _bSpawner: {fileID: 3680257805996566915}
   animator: {fileID: 0}
   playerSign: {fileID: 1241195618024531551}
+  rendererSkin: {fileID: 800017402590182674}
   shield: {fileID: 2443561755542812080, guid: 25ae6493636689a408c5beff0137ee78, type: 3}
   speed: 7
   bulletDmg: 10
   jumpForce: 12
   currentHp: 100
   maxHp: 100
+  isDead: 0
   percent: 0
   hpSlider: {fileID: 664099266895863259}
 --- !u!114 &6152926951074438110
@@ -496,6 +498,11 @@ GameObject:
 --- !u!4 &800017402586967054 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400060, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
+  m_PrefabInstance: {fileID: 800017402587100850}
+  m_PrefabAsset: {fileID: 0}
+--- !u!137 &800017402590182674 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 13700000, guid: fcb334eb247ae3e488abb081c847cf09, type: 3}
   m_PrefabInstance: {fileID: 800017402587100850}
   m_PrefabAsset: {fileID: 0}
 --- !u!95 &3482769449765856311

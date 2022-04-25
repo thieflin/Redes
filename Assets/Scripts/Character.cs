@@ -12,6 +12,7 @@ public class Character : MonoBehaviourPun
     [SerializeField] GameObject _bSpawner;
     [SerializeField] Animator animator;
     [SerializeField] GameObject playerSign;
+    [SerializeField] Renderer rendererSkin;
 
 
     public static bool isAttacking;
@@ -27,8 +28,10 @@ public class Character : MonoBehaviourPun
     Rigidbody _rb;
 
     public float currentHp, maxHp;
+    public bool isDead;
     public float percent;
     public Slider hpSlider;
+
 
     void Start()
     {
@@ -36,17 +39,16 @@ public class Character : MonoBehaviourPun
         r = GetComponent<Renderer>();
         pv = GetComponent<PhotonView>();
         animator = GetComponentInChildren<Animator>();
-
         hpSlider.maxValue = maxHp;
         hpSlider.value = maxHp;
 
         //Los posiciono a uno en cada lado
         if (PhotonNetwork.PlayerList.Length < 2)
-            transform.position = new Vector3(-7.5f, 1f, -10f);
+            transform.position = new Vector3(-7f, 1f, -10f);
         else
         {
             transform.Rotate(0, -180, 0);
-            transform.position = new Vector3(7.5f, 1f, -10f);
+            transform.position = new Vector3(7f, 1f, -10f);
         }
 
 
@@ -74,20 +76,18 @@ public class Character : MonoBehaviourPun
         if (!photonView.IsMine)
             return;
 
-        //if (WaitingPlayersManager.canStart)
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        if (WaitingPlayersManager.canStart)
         {
-            Jump();
+            if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && !isDead)
+            {
+                Jump();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) && !isDead)
+            {
+                photonView.RPC("Shoot", RpcTarget.All);
+            }
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            photonView.RPC("Shoot", RpcTarget.All);
-        }
-
-
-
-
     }
 
     private void FixedUpdate()
@@ -95,7 +95,7 @@ public class Character : MonoBehaviourPun
         if (!pv.IsMine)
             return;
 
-        if (WaitingPlayersManager.canStart)
+        if (WaitingPlayersManager.canStart && !isDead)
         {
             if (Input.GetAxis("Horizontal") > 0)
             {
@@ -136,9 +136,11 @@ public class Character : MonoBehaviourPun
 
         currentHp -= dmg;
         photonView.RPC("UpdateHpChar", RpcTarget.All, currentHp);
+
         if (currentHp <= 0)
         {
-            Die();
+            //Die();
+            photonView.RPC("Die", RpcTarget.All);
         }
 
     }
@@ -152,6 +154,11 @@ public class Character : MonoBehaviourPun
     [PunRPC]
     public void Die()
     {
+        //if (!pv.IsMine)
+        //    return;
+        animator.SetFloat("Speed", 0);
+        rendererSkin.material.color = Color.red;
+        isDead = true;
         Debug.Log("a casitaaaaaaaaaaaaa");
     }
 }
