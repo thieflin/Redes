@@ -39,9 +39,12 @@ public class Enemy : MonoBehaviourPun
         if (_canShoot)
             StartCoroutine(shootingTime());
 
-
         if (!WaitingPlayersManager.canStart)
             Destroy(gameObject);
+
+        if (WinLossCondition.gameIsOver)
+            pv.RPC("DestroyEnemy", RpcTarget.All);
+
     }
 
     //eSTA FUNCION ES LA QUE UPDATE EL SLIDER EN BASE A LA VIDA CON UN RPC PARA NOTIFICARLE A LOS OTROS LA VIDA QUE PIERDO
@@ -49,6 +52,12 @@ public class Enemy : MonoBehaviourPun
     public void UpdateHp()
     {
         slider.value = _hp;
+    }
+
+    [PunRPC]
+    public void DestroyEnemy()
+    {
+        Destroy(gameObject);
     }
 
     //Este take dmg lo que hace es updatear mi estado actual en MI pantalla
@@ -63,7 +72,6 @@ public class Enemy : MonoBehaviourPun
             //Bueno aca consulta si muere o no para hacer el pedidito de bicho
             if (_hp <= 0)
             {
-    
                 StartCoroutine(WaitTillSpawnCoroutine());
             }
         }

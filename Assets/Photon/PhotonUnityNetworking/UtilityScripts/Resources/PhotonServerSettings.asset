@@ -52,6 +52,11 @@ MonoBehaviour:
   - UpdateHp
   - UpdateHpChar
   - UpdateScore
+  - Respawn
+  - BTN_PlayAgain
+  - OnPlayAgain
+  - DestroyEnemy
+  - UpdateTexts
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

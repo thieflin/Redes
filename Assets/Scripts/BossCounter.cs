@@ -7,11 +7,13 @@ using Photon.Pun;
 
 public class BossCounter : MonoBehaviour
 {
+    public PhotonView pv;
     public TextMeshProUGUI bossCounterText;
     public static int timeDefeatBoss;
 
     private void Update()
     {
+        //pv.RPC("UpdateScore", RpcTarget.All);
         UpdateScore();
     }
 

@@ -31,6 +31,7 @@ public class Character : MonoBehaviourPun
     public bool isDead;
     public float percent;
     public Slider hpSlider;
+    public int characterID;
 
 
     void Start()
@@ -44,11 +45,17 @@ public class Character : MonoBehaviourPun
 
         //Los posiciono a uno en cada lado
         if (PhotonNetwork.PlayerList.Length < 2)
+        {
             transform.position = new Vector3(-7f, 1f, -10f);
+            characterID = 1;
+            WinLossCondition.player1 = this;
+        }
         else
         {
             transform.Rotate(0, -180, 0);
             transform.position = new Vector3(7f, 1f, -10f);
+            characterID = 2;
+            WinLossCondition.player2 = this;
         }
 
 
@@ -139,7 +146,6 @@ public class Character : MonoBehaviourPun
 
         if (currentHp <= 0)
         {
-            //Die();
             photonView.RPC("Die", RpcTarget.All);
         }
 
@@ -154,12 +160,41 @@ public class Character : MonoBehaviourPun
     [PunRPC]
     public void Die()
     {
-        //if (!pv.IsMine)
-        //    return;
-        animator.SetFloat("Speed", 0);
-        rendererSkin.material.color = Color.red;
+        if (!isDead)
+        {
+            animator.SetFloat("Speed", 0);
+            this.GetComponent<BoxCollider>().isTrigger = true;
+            rendererSkin.material.color = Color.red;
+            WinLossCondition.playersDead++;
+        }
+
         isDead = true;
-        Debug.Log("a casitaaaaaaaaaaaaa");
+    }
+
+    [PunRPC]
+    public void Respawn()
+    {
+        currentHp = maxHp;
+        rendererSkin.material.color = Color.white;
+        this.GetComponent<BoxCollider>().isTrigger = false;
+        photonView.RPC("UpdateHpChar", RpcTarget.All, currentHp);
+
+        if (characterID == 1)
+        {
+            transform.position = new Vector3(-7f, 1f, -10f);
+        }
+        else if (characterID == 2)
+        {
+            transform.Rotate(0, -180, 0);
+            transform.position = new Vector3(7f, 1f, -10f);
+        }
+
+        isDead = false;
+    }
+
+    public void RespawnWithRPC()
+    {
+        photonView.RPC("Respawn", RpcTarget.All);
     }
 }
 

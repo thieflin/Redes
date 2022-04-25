@@ -10,12 +10,6 @@ public class InstantiatePlayer : MonoBehaviourPun
     void Awake()
     {
         PhotonNetwork.Instantiate("Character", new Vector3(10, 1f, -10f), Quaternion.identity);
-        pv.RPC("UpdateCount", RpcTarget.AllBuffered);
     }
 
-    [PunRPC]
-    public void UpdateCount()
-    {
-        Debug.Log("sume");
-    }
 }

@@ -35,7 +35,7 @@ public class WaitingPlayersManager : MonoBehaviour
         }
     }
 
-    void CountDown()
+    public void CountDown()
     {
         startTextAnimation.SetTrigger("StartGame");
         StartCoroutine(WaitTilBichitoSpawn());

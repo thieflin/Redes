@@ -14,7 +14,6 @@ public class EnemyBullet : MonoBehaviour
     public void Update()
     {
         transform.position += dir*speed*Time.deltaTime;
-        Debug.Log(dir); 
     }
 
 
@@ -24,7 +23,6 @@ public class EnemyBullet : MonoBehaviour
         _dmg = dmg;
         _randomDir = randomDir;
         dir = new Vector3(randomDir, -1, 0);
-        Debug.Log(dir);
         return this;
     }
 
