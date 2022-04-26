@@ -16,8 +16,6 @@ public class Character : MonoBehaviourPun
 
 
     public static bool isAttacking;
-    public Shield shield;
-
 
     [Header("Physics")]
     public float speed;
