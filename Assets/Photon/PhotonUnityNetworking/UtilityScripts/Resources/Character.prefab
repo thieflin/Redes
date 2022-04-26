@@ -356,6 +356,8 @@ MonoBehaviour:
   isDead: 0
   percent: 0
   hpSlider: {fileID: 664099266895863259}
+  canShoot: 0
+  shootTimer: 1
 --- !u!114 &6152926951074438110
 MonoBehaviour:
   m_ObjectHideFlags: 0

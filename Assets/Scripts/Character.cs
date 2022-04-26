@@ -31,11 +31,14 @@ public class Character : MonoBehaviourPun
     public bool isDead;
     public float percent;
     public Slider hpSlider;
+    public bool canShoot;
+    public float shootTimer;
     //public int characterID = 0;
 
 
     void Start()
     {
+        canShoot = true;
         currentHp = maxHp;
         r = GetComponent<Renderer>();
         pv = GetComponent<PhotonView>();
@@ -92,9 +95,10 @@ public class Character : MonoBehaviourPun
                 Jump();
             }
 
-            if (Input.GetKeyDown(KeyCode.Space) && !isDead)
+            if (Input.GetKeyDown(KeyCode.Space) && !isDead && canShoot)
             {
                 photonView.RPC("Shoot", RpcTarget.All);
+                StartCoroutine(WaitForShoot());
             }
         }
     }
@@ -173,33 +177,12 @@ public class Character : MonoBehaviourPun
         isDead = true;
     }
 
-    //public void Respawn()
-    //{
-    //    //currentHp = maxHp;
-    //    //rendererSkin.material.color = Color.white;
-    //    //this.GetComponent<BoxCollider>().isTrigger = false;
-    //    photonView.RPC("UpdateHpChar", RpcTarget.All, currentHp);
-
-    //    if (SetID.instance.characterID == 1)
-    //    {
-    //        transform.position = new Vector3(-7f, 1f, -10f);
-    //        Debug.Log("ENTRE AL CHARACTER ID 1!!!");
-    //    }
-    //    else if (SetID.instance.characterID == 2)
-    //    {
-    //        transform.Rotate(0, -180, 0);
-    //        transform.position = new Vector3(7f, 1f, -10f);
-    //        Debug.Log("ENTRE AL CHARACTER ID 2!!!");
-    //    }
-
-    //    isDead = false;
-    //}
-
-    //public void RespawnWithRPC()
-    //{
-    //    photonView.RPC("Respawn", RpcTarget.All);
-    //}
-
+    IEnumerator WaitForShoot()
+    {
+        canShoot = false;
+        yield return new WaitForSeconds(shootTimer);
+        canShoot = true;
+    }
 
 }
 
