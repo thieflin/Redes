@@ -57,6 +57,15 @@ MonoBehaviour:
   - OnPlayAgain
   - DestroyEnemy
   - UpdateTexts
+  - ChangeWeapon
+  - OnMouseDown
+  - RPCChange
+  - Change
+  - OnMouseOver
+  - Attack
+  - WaveCoroutine
+  - SetQueue
+  - WaveSpawner
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

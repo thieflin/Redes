@@ -49,7 +49,7 @@ public class WaitingPlayersManager : MonoBehaviour
     public IEnumerator WaitTilBichitoSpawn()
     {
         yield return new WaitForSeconds(waitUntilSpawn);
-        counterKillsBoss.SetActive(true);
+        //counterKillsBoss.SetActive(true);
         canStart = true;
     }
 

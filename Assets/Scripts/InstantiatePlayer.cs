@@ -7,21 +7,40 @@ public class InstantiatePlayer : MonoBehaviourPun
 {
     public PhotonView pv;
 
+    public List<GameObject> playerList;
+
+    [SerializeField] Transform playerPos1, playerPos2;
+
+    public static Character player1, player2;
+
     void Awake()
     {
-        var character = PhotonNetwork.Instantiate("Character", new Vector3(10, 1f, -10f), Quaternion.identity);
+        var character = PhotonNetwork.Instantiate("Character", Vector3.zero, Quaternion.identity);
 
-        if (SetID.instance.characterID == 1)
+        if (SetID.instance.characterID == 0)
         {
-            character.transform.position = new Vector3(-7f, 1f, -10f);
-            Debug.Log("ENTREE XDXDXD");
+            Debug.Log("Entre 1");
+            //SetID.instance.characterID = 1;
+            character.transform.position = playerPos1.position;
+            character.transform.forward = playerPos1.forward;
         }
-        else if (SetID.instance.characterID == 2)
+
+        else if (SetID.instance.characterID == 1)
         {
-            character.transform.Rotate(0, -180, 0);
-            character.transform.position = new Vector3(7f, 1f, -10f);
-            Debug.Log("ENTREE XDXDXD x2");
+            Debug.Log("Entre 2");
+            //SetID.instance.characterID = 2;
+            character.transform.position = playerPos2.position;
+            character.transform.forward = playerPos2.forward;
         }
+
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.J))
+            foreach (var player in playerList)
+            {
+                Debug.Log(player.name);
+            }
+    }
 }

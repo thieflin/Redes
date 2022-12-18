@@ -14,7 +14,6 @@ public class Character : MonoBehaviourPun
     [SerializeField] GameObject playerSign;
     [SerializeField] Renderer rendererSkin;
 
-
     public static bool isAttacking;
 
     [Header("Physics")]
@@ -31,6 +30,18 @@ public class Character : MonoBehaviourPun
     public Slider hpSlider;
     public bool canShoot;
     public float shootTimer;
+    Vector3 direction;
+    public float verticalMovement;
+    public float horizontalMovement;
+    public ParticleSystem shootParticle;
+
+    [Header("Rotation values")]
+    [SerializeField] private float _smoothRotation = 0.1f;
+    float turnSmoothVelocity;
+    [SerializeField] private float rotateOnMove;
+
+    [SerializeField] Transform mySign;
+
     //public int characterID = 0;
 
 
@@ -44,20 +55,23 @@ public class Character : MonoBehaviourPun
         hpSlider.maxValue = maxHp;
         hpSlider.value = maxHp;
 
+        FindObjectOfType<InstantiatePlayer>().playerList.Add(this.gameObject);
+       
         //Los posiciono a uno en cada lado
         if (SetID.instance.characterID == 0)
         {
             if (PhotonNetwork.PlayerList.Length < 2)
             {
-                transform.position = new Vector3(-7f, 1f, -10f);
+                //transform.position = new Vector3(-7f, 1f, -10f);
                 SetID.instance.characterID = 1;
                 WinLossCondition.player1 = this;
             }
             else
             {
-                transform.Rotate(0, -180, 0);
-                transform.position = new Vector3(7f, 1f, -10f);
+                //transform.Rotate(0, -180, 0);
+                //transform.position = new Vector3(7f, 1f, -10f);
                 SetID.instance.characterID = 2;
+                transform.position -= new Vector3(3f, 0f, 0f);
                 WinLossCondition.player2 = this;
             }
         }
@@ -86,14 +100,18 @@ public class Character : MonoBehaviourPun
         if (!photonView.IsMine)
             return;
 
+        verticalMovement = Input.GetAxis("Vertical");
+        horizontalMovement = Input.GetAxis("Horizontal");
+
+
         if (WaitingPlayersManager.canStart)
         {
-            if ((Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) && !isDead)
+            if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) && !isDead)
             {
                 Jump();
             }
 
-            if (Input.GetKeyDown(KeyCode.Space) && !isDead && canShoot)
+            if (Input.GetMouseButton(0) && !isDead && canShoot)
             {
                 photonView.RPC("Shoot", RpcTarget.All);
                 StartCoroutine(WaitForShoot());
@@ -106,25 +124,48 @@ public class Character : MonoBehaviourPun
         if (!pv.IsMine)
             return;
 
+        //direction = new Vector3(Input.GetAxis("Horizontal"), -9.81f, Input.GetAxis("Vertical"));
+
+
         if (WaitingPlayersManager.canStart && !isDead)
         {
-            if (Input.GetAxis("Horizontal") > 0)
+            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
             {
-                _rb.MovePosition(_rb.position + transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
-                transform.right = Vector3.right;
-                animator.SetFloat("Speed", 1);
-            }
-            else if (Input.GetAxis("Horizontal") < 0)
-            {
-                _rb.MovePosition(_rb.position - transform.right * speed * Input.GetAxis("Horizontal") * Time.fixedDeltaTime);
-                transform.right = Vector3.left;
+                //Move(new Vector3(horizontalMovement, -9.81f, verticalMovement));
+                _rb.MovePosition(_rb.position + ((Vector3.right * Input.GetAxis("Horizontal")) + (Vector3.forward * Input.GetAxis("Vertical"))) * speed * Time.fixedDeltaTime);
+
+                direction = new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical"));
+
+                var matrix = Matrix4x4.Rotate(Quaternion.Euler(0, -rotateOnMove, 0));
+
+                var newInput = matrix.MultiplyPoint3x4(direction);
+
+                var newInputRotation = matrix.MultiplyPoint3x4(direction);
+
+                if (newInputRotation.z >= 0.1f || newInputRotation.x >= 0.1f || newInputRotation.x <= -0.1 || newInputRotation.z <= -0.1)
+                {
+                    float targetAngle = Mathf.Atan2(newInputRotation.x, newInputRotation.z) * Mathf.Rad2Deg;
+
+                    float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, _smoothRotation);
+
+                    transform.rotation = Quaternion.Euler(0f, angle, 0f);
+                }
+
+                //transform.right = Vector3.right;
                 animator.SetFloat("Speed", 1);
             }
             else
             {
+                _rb.MovePosition(_rb.position);
                 animator.SetFloat("Speed", 0);
             }
         }
+    }
+
+    public void Move(Vector3 direction)
+    {
+        _rb.velocity = direction * speed * Time.fixedDeltaTime;
+
     }
 
     void Jump()
@@ -136,6 +177,8 @@ public class Character : MonoBehaviourPun
     void Shoot()
     {
         Instantiate(_bulletPref, _bSpawner.transform.position, transform.rotation);
+        var particles = Instantiate(shootParticle, _bSpawner.transform.position, transform.rotation);
+        particles.transform.parent =  _bSpawner.gameObject.transform;
         //Creo la bala con las caracteristicas que quiera
         _bulletPref.SetBullet(bulletDmg);
 

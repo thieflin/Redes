@@ -5,9 +5,10 @@ using UnityEngine;
 public class SetID : MonoBehaviour
 {
     public int characterID = 0;
+
     public static SetID instance;
 
-    private void Start()
+    private void Awake()
     {
         DontDestroyOnLoad(this);
 
