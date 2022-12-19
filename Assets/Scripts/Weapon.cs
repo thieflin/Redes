@@ -1,18 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class Weapon : MonoBehaviour
+public class Weapon : MonoBehaviourPun
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    protected Enemy targetEnemy;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField] protected List<Transform> fireTransforms;
+
 }

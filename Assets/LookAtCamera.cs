@@ -8,13 +8,16 @@ public class LookAtCamera : MonoBehaviour
     GameObject myCanvas;
     [SerializeField]
     Weapon weaponToBuy;
+    [SerializeField]
     int cost;
+    GoldManager goldManager;
 
     public static bool imInOptions;
 
     // Start is called before the first frame update
     void Start()
-    {   
+    {
+        goldManager = FindObjectOfType<GoldManager>();
     }
 
     // Update is called once per frame
@@ -28,10 +31,9 @@ public class LookAtCamera : MonoBehaviour
     {
         //if (Vector3.Distance(FindObjectOfType<Character>().transform.position, transform.position) > 10)
         //    return;
-        
+
 
         imInOptions = true;
-        Debug.Log("ENTRE OPCIONES");
     }
 
     private void OnMouseExit()
@@ -41,8 +43,11 @@ public class LookAtCamera : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Debug.Log(transform.parent.parent);
+        if (FindObjectOfType<GoldManager>().totalGold >= cost && !transform.parent.parent.GetComponent<WeaponPlace>().hasWeapon)
+        {
+            FindObjectOfType<GoldManager>().RemoveGold(cost);
+            transform.parent.parent.GetComponent<WeaponPlace>().ChangeWeapon(weaponToBuy);
+        }
 
-        transform.parent.parent.GetComponent<WeaponPlace>().ChangeWeapon(weaponToBuy);
     }
 }

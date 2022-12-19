@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
 using Photon.Pun;
+using System.Linq;
+using UnityEngine;
 
 public class WeaponPlace : MonoBehaviourPun
 {
@@ -14,25 +12,27 @@ public class WeaponPlace : MonoBehaviourPun
 
     Weapon myWeapon;
 
-    [SerializeField]
-    bool hasWeapon;
+    public bool hasWeapon;
 
     [SerializeField] GameObject instantiatedWeapon;
 
     PhotonView pv;
-
+    GoldManager goldManager;
     float distance = 10;
 
     private void Awake()
     {
         pv = GetComponent<PhotonView>();
-
+        goldManager = FindObjectOfType<GoldManager>();
         hasWeapon = false;
     }
 
     [PunRPC]
     private void OnMouseOver()
     {
+        if (FindObjectOfType<InstantiatePlayer>().playerList.Count < 1)
+            return;
+
         var anyPlayerClose = FindObjectOfType<InstantiatePlayer>().playerList.OrderBy(x => Vector3.Distance(x.transform.position, transform.position)).First();
 
         if (!anyPlayerClose)
@@ -40,7 +40,7 @@ public class WeaponPlace : MonoBehaviourPun
 
         if (Vector3.Distance(anyPlayerClose.transform.position, transform.position) > distance)
             return;
-         
+
         LookAtCamera.imInOptions = true;
 
         if (LookAtCamera.imInOptions)
@@ -59,7 +59,7 @@ public class WeaponPlace : MonoBehaviourPun
         myCanvas.SetActive(false);
     }
 
-   public void ChangeState()
+    public void ChangeState()
     {
         hasWeapon = !hasWeapon;
     }
@@ -72,8 +72,6 @@ public class WeaponPlace : MonoBehaviourPun
 
         hasWeapon = true;
 
-        //if (instantiatedWeapon)
-        //PhotonNetwork.Destroy(instantiatedWeapon.gameObject);
         myWeapon = weapon;
 
         photonView.RPC("Change", RpcTarget.AllBuffered);
@@ -86,6 +84,7 @@ public class WeaponPlace : MonoBehaviourPun
         hasWeapon = true;
 
         var newWeapon = PhotonNetwork.Instantiate(myWeapon.name, Vector3.zero, Quaternion.identity);
+
 
         instantiatedWeapon = newWeapon.gameObject;
 

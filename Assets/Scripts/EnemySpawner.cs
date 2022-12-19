@@ -11,6 +11,8 @@ public class EnemySpawner : MonoBehaviourPun
 
     public List<Enemy> enemiesPrefab;
 
+    public List<Enemy> allEnemiesCreated = new List<Enemy>();
+
     [SerializeField]
     bool isSpawning;
 
@@ -27,7 +29,7 @@ public class EnemySpawner : MonoBehaviourPun
 
     private void Awake()
     {
-        currentDifficulty = 2;
+        currentDifficulty = 3;
         SetQueue(currentDifficulty);
 
         foreach (var item in enemiesToSpawn)
@@ -61,6 +63,8 @@ public class EnemySpawner : MonoBehaviourPun
     {
         if (IDManager.instance.canSpawn && WaitingPlayersManager.canStart)
         {
+            if (!pv.IsMine)
+                return;
             if (isSpawning)
                 WaveSpawner(currentDifficulty);
 
@@ -74,7 +78,10 @@ public class EnemySpawner : MonoBehaviourPun
     public void SpawnEnemy(Enemy enemy)
     {
         isSpawning = false;
-        PhotonNetwork.Instantiate(enemy.name, transform.position, Quaternion.identity);
+        var newEnemy = PhotonNetwork.Instantiate(enemy.name, transform.position, Quaternion.identity);
+
+        if (newEnemy.GetComponent<Enemy>())
+            allEnemiesCreated.Add(newEnemy.GetComponent<Enemy>());
         //IDManager.instance.canSpawn = false;
     }
 
@@ -89,7 +96,8 @@ public class EnemySpawner : MonoBehaviourPun
 
             if (enemiesToSpawn.Count > 0)
             {
-                SpawnEnemy(enemiesToSpawn.Dequeue());
+                var enemy = enemiesToSpawn.Dequeue();
+                SpawnEnemy(enemy);
                 count++;
             }
 
@@ -111,6 +119,7 @@ public class EnemySpawner : MonoBehaviourPun
         {
             if (enemiesToSpawn.Count > 0)
                 SpawnEnemy(enemiesToSpawn.Dequeue());
+
 
             yield return new WaitForSeconds(timeBetweenSpawns);
         }

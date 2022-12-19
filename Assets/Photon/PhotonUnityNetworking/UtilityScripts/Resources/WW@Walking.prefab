@@ -1124,8 +1124,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1.1058315, z: 0.46031475}
-  m_Center: {x: 0, y: 0.56105554, z: 0.08032497}
+  m_Size: {x: 1, y: 1.1058315, z: 0.6413988}
+  m_Center: {x: -0, y: 0.56105554, z: -0.023092588}
 --- !u!95 &3796691050715067294
 Animator:
   serializedVersion: 3
@@ -1161,11 +1161,13 @@ MonoBehaviour:
   _hp: 0
   _maxHp: 500
   slider: {fileID: 0}
-  range: 3
+  range: 4
   moveSpeed: 200
   mySkins: []
+  smooth: 0.1
   isAvoiding: 0
   pv: {fileID: 0}
+  coinPrefab: {fileID: 1990993027691850191, guid: b23980e2e7716dc408a84db3e5baf69a, type: 3}
 --- !u!114 &3796691050715067293
 MonoBehaviour:
   m_ObjectHideFlags: 0

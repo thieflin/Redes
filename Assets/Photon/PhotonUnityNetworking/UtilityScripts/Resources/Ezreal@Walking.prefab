@@ -2030,8 +2030,10 @@ MonoBehaviour:
   range: 10
   moveSpeed: 100
   mySkins: []
+  smooth: 0
   isAvoiding: 0
   pv: {fileID: 0}
+  coinPrefab: {fileID: 1990993027691850191, guid: b23980e2e7716dc408a84db3e5baf69a, type: 3}
 --- !u!114 &7934764475419549031
 MonoBehaviour:
   m_ObjectHideFlags: 0

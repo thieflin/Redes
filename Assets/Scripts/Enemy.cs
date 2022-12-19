@@ -43,6 +43,10 @@ public class Enemy : MonoBehaviourPun
     [SerializeField]
     bool isAvoiding;
     public PhotonView pv;
+    bool dead;
+
+    [SerializeField]
+    GameObject coinPrefab;
 
     //public GameObject _ebulletPref;
 
@@ -83,6 +87,12 @@ public class Enemy : MonoBehaviourPun
 
     private void FixedUpdate()
     {
+        if (dead)
+        {
+            rb.isKinematic = true;
+            return;
+        }
+
         if (!isAvoiding)
             direction = (target.transform.position - transform.position).normalized;
 
@@ -128,31 +138,12 @@ public class Enemy : MonoBehaviourPun
 
         if (left)
         {
-            Vector3 nextPos = transform.position + new Vector3(1.5f, 0, 0);
-
-            float t = 0;
-
-            while(t < 1)
-            {
-                transform.position = Vector3.Lerp(transform.position, nextPos, t);
-
-                t += 0.005f * smooth;
-            }
+            rb.MovePosition(transform.position + new Vector3(-1.5f, 0, 0));
 
         }
-            //rb.MovePosition(transform.position + new Vector3(2, 0, 0));
         else
         {
-            Vector3 nextPos = transform.position + new Vector3(-1.5f, 0, 0);
-
-            float t = 0;
-
-            while (t < 1)
-            {
-                transform.position = Vector3.Lerp(transform.position, nextPos, t);
-
-                t += 0.005f * smooth;
-            }
+            rb.MovePosition(transform.position + new Vector3(1.5f, 0, 0));
 
         }
 
@@ -168,7 +159,11 @@ public class Enemy : MonoBehaviourPun
     [PunRPC]
     public void Die()
     {
+        dead = true;
         anim.Play("Dying");
+
+        var newCoin = PhotonNetwork.Instantiate(coinPrefab.name, transform.position + new Vector3(0f, 2f, 0f), Quaternion.identity);
+
         Destroy(gameObject, 2.5f);
     }
     //private void Update()
@@ -205,6 +200,9 @@ public class Enemy : MonoBehaviourPun
     ///
     public void TakeDamage(int dmg)
     {
+        if (dead)
+            return;
+
         if (!pv.IsMine)
         {
             _hp -= dmg;
@@ -216,13 +214,13 @@ public class Enemy : MonoBehaviourPun
                 skin.material.color = Color.red;
             }
 
-            Invoke("DamageFeedBack", 0.2f);
+            Invoke("DamageFeedBack", 0.1f);
 
             //Bueno aca consulta si muere o no para hacer el pedidito de bicho
             if (_hp <= 0)
             {
-                photonView.RPC("Die", RpcTarget.All);
-
+                photonView.RPC("Die", RpcTarget.MasterClient);
+                //Die();
                 StartCoroutine(WaitTillSpawnCoroutine());
             }
         }
@@ -242,7 +240,8 @@ public class Enemy : MonoBehaviourPun
 
             if (_hp <= 0)
             {
-                photonView.RPC("Die", RpcTarget.All);
+                //Die();
+                photonView.RPC("Die", RpcTarget.MasterClient);
                 StartCoroutine(WaitTillSpawnCoroutine());
             }
         }
