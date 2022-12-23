@@ -587,5 +587,5 @@ MonoBehaviour:
   - {fileID: 6737703141729571274}
   missilPrefab: {fileID: 7397639152189153550, guid: e5af986eb9181cc41a1e81aef107d4eb, type: 3}
   lookAt: {fileID: 8165985827867567728}
-  cd: 1
+  cd: 1.5
   checkTime: 1

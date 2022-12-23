@@ -37,18 +37,19 @@ public class WaitingPlayersManager : MonoBehaviour
         {
             textWaitingPlayers.SetActive(false);
             CountDown();
+            //canStart = true;
         }
     }
 
     public void CountDown()
     {
-        startTextAnimation.SetTrigger("StartGame");
+        //startTextAnimation.SetTrigger("StartGame");
         StartCoroutine(WaitTilBichitoSpawn());
     }
 
     public IEnumerator WaitTilBichitoSpawn()
     {
-        yield return new WaitForSeconds(waitUntilSpawn);
+        yield return new WaitForSeconds(1f);
         //counterKillsBoss.SetActive(true);
         canStart = true;
     }

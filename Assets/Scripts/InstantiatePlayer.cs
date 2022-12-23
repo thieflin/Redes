@@ -17,22 +17,21 @@ public class InstantiatePlayer : MonoBehaviourPun
     {
         var character = PhotonNetwork.Instantiate("Character", Vector3.zero, Quaternion.identity);
 
-        if (SetID.instance.characterID == 0)
+        if (PhotonNetwork.PlayerList.Length <= 1)
         {
             Debug.Log("Entre 1");
-            //SetID.instance.characterID = 1;
+            SetID.instance.characterID = 1;
             character.transform.position = playerPos1.position;
             character.transform.forward = playerPos1.forward;
         }
-
-        else if (SetID.instance.characterID == 1)
+        else if (PhotonNetwork.PlayerList.Length > 1)
         {
             Debug.Log("Entre 2");
-            //SetID.instance.characterID = 2;
-            character.transform.position = playerPos2.position;
+            SetID.instance.characterID = 2;
+            character.transform.position = playerPos2.position + new Vector3(5f, 0f, 0f);
             character.transform.forward = playerPos2.forward;
         }
-
+    
     }
 
     private void Update()

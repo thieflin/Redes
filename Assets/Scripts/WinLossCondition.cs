@@ -10,8 +10,8 @@ public class WinLossCondition : MonoBehaviour
 {
     public PhotonView pv;
 
-    public static int playersDead;
-    public int killsToWin = 5;
+    //public static int playersDead;
+    //public int killsToWin = 5;
 
     public GameObject winScreen, loseScreen;
 
@@ -37,33 +37,33 @@ public class WinLossCondition : MonoBehaviour
         PhotonNetwork.AutomaticallySyncScene = true;
         gameIsOver = false;
 
-        playersDead = 0;
-
+        //playersDead = 0;
+        //player2.transform.position += new Vector3(5, 0, 0);
     }
 
     private void Update()
     {
         //LOSSING
-        if (playersDead == 2)
-        {
-            loseScreen.SetActive(true);
-            gameIsOver = true;
-        }
+        //if (playersDead == 2)
+        //{
+        //    loseScreen.SetActive(true);
+        //    gameIsOver = true;
+        //}
 
-        Debug.Log(playersDead + " Player Dead");
-        Debug.Log(playersReady + " Player Ready");
+        //Debug.Log(playersDead + " Player Dead");
+        //Debug.Log(playersReady + " Player Ready");
 
         //WINNING
-        if (BossCounter.timeDefeatBoss >= killsToWin)
-        {
-            winScreen.SetActive(true);
-            gameIsOver = true;
-        }
-        else
-        {
-            winScreen.SetActive(false);
-            gameIsOver = false;
-        }
+        //if (BossCounter.timeDefeatBoss >= killsToWin)
+        //{
+        //    winScreen.SetActive(true);
+        //    gameIsOver = true;
+        //}
+        //else
+        //{
+        //    winScreen.SetActive(false);
+        //    gameIsOver = false;
+        //}
     }
 
     [PunRPC]
@@ -84,7 +84,7 @@ public class WinLossCondition : MonoBehaviour
 
         if (playersReady == 2)
         {
-            BossCounter.timeDefeatBoss = 0;
+            //BossCounter.timeDefeatBoss = 0;
             PhotonNetwork.LoadLevel(1);
             gameIsOver = false;
         }

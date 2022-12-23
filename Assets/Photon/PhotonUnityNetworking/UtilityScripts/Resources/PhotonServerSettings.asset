@@ -69,6 +69,10 @@ MonoBehaviour:
   - InstantiateBullet
   - UpdateGoldText
   - AddGold
+  - UpdateHP
+  - EzrealAttack
+  - UpdateWaveText
+  - ChangeState
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

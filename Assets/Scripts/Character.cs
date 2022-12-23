@@ -24,10 +24,10 @@ public class Character : MonoBehaviourPun
     float jumpForce;
     Rigidbody _rb;
 
-    public float currentHp, maxHp;
+    //public float currentHp, maxHp;
     public bool isDead;
     public float percent;
-    public Slider hpSlider;
+    //public Slider hpSlider;
     public bool canShoot;
     public float shootTimer;
     Vector3 direction;
@@ -44,37 +44,43 @@ public class Character : MonoBehaviourPun
 
     //public int characterID = 0;
 
+    private void Awake()
+    {
+
+    }
+
 
     void Start()
     {
+
+
         canShoot = true;
-        currentHp = maxHp;
+        //currentHp = maxHp;
         r = GetComponent<Renderer>();
         pv = GetComponent<PhotonView>();
         animator = GetComponentInChildren<Animator>();
-        hpSlider.maxValue = maxHp;
-        hpSlider.value = maxHp;
+        //hpSlider.maxValue = maxHp;
+        //hpSlider.value = maxHp;
 
         FindObjectOfType<InstantiatePlayer>().playerList.Add(this.gameObject);
-       
+
         //Los posiciono a uno en cada lado
-        if (SetID.instance.characterID == 0)
+        //if ()
+        //{
+        if (SetID.instance.characterID == 1)
         {
-            if (PhotonNetwork.PlayerList.Length < 2)
-            {
-                //transform.position = new Vector3(-7f, 1f, -10f);
-                SetID.instance.characterID = 1;
-                WinLossCondition.player1 = this;
-            }
-            else
-            {
-                //transform.Rotate(0, -180, 0);
-                //transform.position = new Vector3(7f, 1f, -10f);
-                SetID.instance.characterID = 2;
-                transform.position -= new Vector3(3f, 0f, 0f);
-                WinLossCondition.player2 = this;
-            }
+            //transform.position = new Vector3(-7f, 1f, -10f);
+            transform.position -= new Vector3(-1f, 0f, 0f);
+            //SetID.instance.characterID = 1;
+            WinLossCondition.player1 = this;
         }
+        else if (SetID.instance.characterID == 2)
+        {
+            //SetID.instance.characterID = 2;
+            transform.position -= new Vector3(5f, 0f, 0f);
+            WinLossCondition.player2 = this;
+        }
+        //}
 
         if (pv.IsMine)
         {
@@ -82,14 +88,14 @@ public class Character : MonoBehaviourPun
             r.material.color = Color.blue;
             _rb = GetComponent<Rigidbody>();
             //Esto es para que la vida sea del color que le corresponde
-            hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.blue;
+            //hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.blue;
             playerSign.SetActive(true);
         }
         else
         {
             isAttacking = true;
             r.material.color = Color.red;
-            hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.red;
+            //hpSlider.gameObject.transform.Find("Fill Area").Find("Fill").GetComponent<Image>().color = Color.red;
             playerSign.SetActive(false);
         }
 
@@ -106,10 +112,10 @@ public class Character : MonoBehaviourPun
 
         if (WaitingPlayersManager.canStart)
         {
-            if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) && !isDead)
-            {
-                Jump();
-            }
+            //if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) && !isDead)
+            //{
+            //    Jump();
+            //}
 
             if (Input.GetMouseButton(0) && !isDead && canShoot)
             {
@@ -178,45 +184,45 @@ public class Character : MonoBehaviourPun
     {
         Instantiate(_bulletPref, _bSpawner.transform.position, transform.rotation);
         var particles = Instantiate(shootParticle, _bSpawner.transform.position, transform.rotation);
-        particles.transform.parent =  _bSpawner.gameObject.transform;
+        particles.transform.parent = _bSpawner.gameObject.transform;
         //Creo la bala con las caracteristicas que quiera
         _bulletPref.SetBullet(bulletDmg);
 
     }
 
-    public void TakeDmg(int dmg)
-    {
-        if (!pv.IsMine) return;
+    //public void TakeDmg(int dmg)
+    //{
+    //    if (!pv.IsMine) return;
 
-        currentHp -= dmg;
-        photonView.RPC("UpdateHpChar", RpcTarget.All, currentHp);
+    //    currentHp -= dmg;
+    //    photonView.RPC("UpdateHpChar", RpcTarget.All, currentHp);
 
-        if (currentHp <= 0)
-        {
-            photonView.RPC("Die", RpcTarget.All);
-        }
+    //    if (currentHp <= 0)
+    //    {
+    //        photonView.RPC("Die", RpcTarget.All);
+    //    }
 
-    }
-    [PunRPC]
-    public void UpdateHpChar(float hp)
-    {
-        currentHp = hp;
-        hpSlider.value = hp;
-    }
+    //}
+    //[PunRPC]
+    //public void UpdateHpChar(float hp)
+    //{
+    //    currentHp = hp;
+    //    hpSlider.value = hp;
+    //}
 
-    [PunRPC]
-    public void Die()
-    {
-        if (!isDead)
-        {
-            animator.SetFloat("Speed", 0);
-            this.GetComponent<BoxCollider>().isTrigger = true;
-            rendererSkin.material.color = Color.red;
-            WinLossCondition.playersDead++;
-        }
+    //[PunRPC]
+    //public void Die()
+    //{
+    //    if (!isDead)
+    //    {
+    //        animator.SetFloat("Speed", 0);
+    //        this.GetComponent<BoxCollider>().isTrigger = true;
+    //        rendererSkin.material.color = Color.red;
+    //        WinLossCondition.playersDead++;
+    //    }
 
-        isDead = true;
-    }
+    //    isDead = true;
+    //}
 
     IEnumerator WaitForShoot()
     {

@@ -33,7 +33,7 @@ public class EnemyBullet : MonoBehaviour
         if (character)
         {
             Debug.Log("toy pegandooo");
-            character.TakeDmg(_dmg);
+            //character.TakeDmg(_dmg);
             Destroy(gameObject);
         }
 

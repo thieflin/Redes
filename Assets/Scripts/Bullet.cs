@@ -11,6 +11,8 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     Character _owner;
 
+    public Transform target;
+
     private void Awake()
     {
         Invoke("Destroy", 3f);
@@ -20,6 +22,9 @@ public class Bullet : MonoBehaviour
     void Update()
     {
         transform.position += transform.forward * _speed * Time.deltaTime;
+
+        if (target != null)
+            transform.LookAt(target);
     }
 
 

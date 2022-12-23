@@ -39,13 +39,25 @@ public class Missil : MonoBehaviourPun
         rb.velocity = direction * speed * Time.fixedDeltaTime;
     }
 
-    private void OnCollisionEnter(Collision collision)
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Enemy"))
+    //    {
+    //        collision.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+    //        collision.gameObject.GetComponent<Enemy>().TakeDamage(20);
+    //        var explosion = Instantiate(explosionPrefab);
+    //        explosion.transform.position = collision.transform.position + new Vector3(0,1.5f,0);
+    //        Destroy(gameObject);
+    //    }
+    //}
+
+    private void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (other.gameObject.CompareTag("Enemy"))
         {
-            collision.gameObject.GetComponent<Enemy>().TakeDamage(20);
+            other.gameObject.GetComponent<Enemy>().TakeDamage(50);
             var explosion = Instantiate(explosionPrefab);
-            explosion.transform.position = collision.transform.position + new Vector3(0,1.5f,0);
+            explosion.transform.position = other.transform.position + new Vector3(0, 1.5f, 0);
             Destroy(gameObject);
         }
     }

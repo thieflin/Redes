@@ -8,11 +8,13 @@ public class Enemy : MonoBehaviourPun
 {
     public Baron target;
 
+
+
     [SerializeField]
     private float _hp;
     [SerializeField]
     private float _maxHp;
-    public Slider slider;
+    //public Slider slider;
 
     [SerializeField] float range;
 
@@ -47,6 +49,9 @@ public class Enemy : MonoBehaviourPun
 
     [SerializeField]
     GameObject coinPrefab;
+
+    [SerializeField]
+    Transform firePointEzreal;
 
     //public GameObject _ebulletPref;
 
@@ -160,11 +165,21 @@ public class Enemy : MonoBehaviourPun
     public void Die()
     {
         dead = true;
+
         anim.Play("Dying");
+
+        if (FindObjectOfType<EnemySpawner>().allEnemiesCreated.Contains(this))
+        {
+            FindObjectOfType<EnemySpawner>().allEnemiesCreated.Remove(this);
+        }
+
+        Destroy(gameObject, 2.5f);
+
+        if (!pv.IsMine)
+            return;
 
         var newCoin = PhotonNetwork.Instantiate(coinPrefab.name, transform.position + new Vector3(0f, 2f, 0f), Quaternion.identity);
 
-        Destroy(gameObject, 2.5f);
     }
     //private void Update()
     //{
@@ -207,7 +222,7 @@ public class Enemy : MonoBehaviourPun
         {
             _hp -= dmg;
 
-            //photonView.RPC("UpdateHp", RpcTarget.All);
+            //photonView.RPC("UpdateHp", RpcTarget.All, dmg);
 
             foreach (var skin in mySkins)
             {
@@ -219,17 +234,16 @@ public class Enemy : MonoBehaviourPun
             //Bueno aca consulta si muere o no para hacer el pedidito de bicho
             if (_hp <= 0)
             {
-                photonView.RPC("Die", RpcTarget.MasterClient);
-                //Die();
-                StartCoroutine(WaitTillSpawnCoroutine());
+                photonView.RPC("Die", RpcTarget.All);
+                //StartCoroutine(WaitTillSpawnCoroutine());
             }
         }
 
         else
         {
-            //Si soy yo, entonces updateame a mi sin problemas
             _hp -= dmg;
-            //slider.value = _hp;
+            //Si soy yo, entonces updateame a mi sin problemas
+            //photonView.RPC("UpdateHp", RpcTarget.All, dmg);
 
             foreach (var skin in mySkins)
             {
@@ -240,13 +254,18 @@ public class Enemy : MonoBehaviourPun
 
             if (_hp <= 0)
             {
-                //Die();
-                photonView.RPC("Die", RpcTarget.MasterClient);
-                StartCoroutine(WaitTillSpawnCoroutine());
+                photonView.RPC("Die", RpcTarget.All);
+                //StartCoroutine(WaitTillSpawnCoroutine());
             }
         }
 
     }
+
+    //[PunRPC]
+    //void UpdateHP(int dmg)
+    //{
+    //    _hp -= dmg;
+    //}
 
     void DamageFeedBack()
     {
@@ -268,6 +287,11 @@ public class Enemy : MonoBehaviourPun
         Destroy(gameObject);
     }
 
+    public void DamageBaron(int damage)
+    {
+        target.TakeDamage(damage);
+    }
+
     //[PunRPC]
     //public void EnemyShooting(float dirX)
     //{
@@ -285,6 +309,13 @@ public class Enemy : MonoBehaviourPun
     //    pv.RPC("EnemyShooting", RpcTarget.All, dirxx);
     //    _canShoot = true;
     //}
+    [PunRPC]
+    public void EzrealAttack(GameObject bullet)
+    {
+        var direction = (target.transform.position - transform.position).normalized;
+        var newBullet = Instantiate(bullet, firePointEzreal.transform.position, Quaternion.Euler(-90, 0, 0));
 
+        newBullet.GetComponent<EzrealBullet>().target = target.transform;
+    }
 
 }
